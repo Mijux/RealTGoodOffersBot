@@ -35,6 +35,9 @@ python .\realtgoodoffersbot.py
 # This command must return bellow
 usage: realtgoodoffersbot.py [-h] -f FILTER_FILE [--update] [--verbose]
 realtgoodoffersbot.py: error: the following arguments are required: -f/--filter-file
+
+# Create DB file
+echo "[]" > OfferAvailable.json
 ```
 
 ## Usage
