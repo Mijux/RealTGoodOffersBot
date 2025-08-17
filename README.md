@@ -30,6 +30,8 @@ python -m venv RealTGoodOffersBot_venv
 source RealTGoodOffersBot_venv/bin/activate
 pip install -r requirements
 
+# /!\ you must create the config.ini file, see Configuration part /!\ 
+
 # Test the installation
 python .\realtgoodoffersbot.py
 # This command must return bellow
@@ -91,7 +93,7 @@ chat_id =
 max_price = 
 ```
 
-### ABI.json
+## ABI.json
 
 An ABI (Application Binary Interface) describes the interface of a smart contract (functions, events, data types) and allows tools such as Web3.py to interact with it correctly from the outside.
 
