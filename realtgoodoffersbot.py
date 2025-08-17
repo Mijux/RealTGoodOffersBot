@@ -109,6 +109,7 @@ def check_offers_and_send_notif(filter_file):
     mytokens = open(filter_file, "r").readlines()
     for i in range(len(mytokens)): mytokens[i] = mytokens[i].replace('\n', '')
 
+    num_notif_sent = 0
     logging.info(f"Nombre d'offres disponibles après filtrage : {len(offers_available)}")
     for offer in offers_available:
         try:
@@ -127,11 +128,13 @@ def check_offers_and_send_notif(filter_file):
                             msg += f"🔗 <a href=\"https://yam.realtoken.network/offer/{offer['args']['offerId']}\">Voir sur le YAM</a>"
                             notify(msg)
                             logging.info(f"Notification envoyée : {msg}")
+                            num_notif_sent += 1
 
         except Exception as e:
             logging.critical(f"Impossible d'appliquer les filtres et d'envoyer des notifications, envoie d'une notification")
             notify(f"⚠️ CRITIQUE : Impossible d'appliquer les filtres et d'envoyer des notifications : {e}")
             raise Exception("Connexion à Gnosis échouée")
+    logging.info(f"Nombre de notification envoyées : {num_notif_sent}")
 
 
 if __name__ == "__main__":
