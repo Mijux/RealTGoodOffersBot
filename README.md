@@ -43,6 +43,8 @@ If you want to stay up to date, you have to provides `--update` param. This will
 
 To get a full-automated system, I encourage you to set-up a cron task on a VPS.
 
+Use the param `--verbose` to get more information during execution. Wether or not, the tool will write a `realtgoodoffersbot.log` log file.
+
 ## Configuration
 
 ### Filter file
@@ -91,7 +93,3 @@ max_price =
 An ABI (Application Binary Interface) describes the interface of a smart contract (functions, events, data types) and allows tools such as Web3.py to interact with it correctly from the outside.
 
 `ABI.json` contains these informations (available on Gnosisscan). You may have to update it if the smart contract is uptaded.
-
-## Additionnal informations
-
-To get a full working bot, you may want to 
