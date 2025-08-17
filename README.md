@@ -33,7 +33,7 @@ pip install -r requirements
 # /!\ you must create the config.ini file, see Configuration part /!\ 
 
 # Test the installation
-python .\realtgoodoffersbot.py
+python realtgoodoffersbot.py
 # This command must return bellow
 usage: realtgoodoffersbot.py [-h] -f FILTER_FILE [--update] [--verbose]
 realtgoodoffersbot.py: error: the following arguments are required: -f/--filter-file
@@ -49,6 +49,12 @@ If you want to stay up to date, you have to provides `--update` param. This will
 To get a full-automated system, I encourage you to set-up a cron task on a VPS.
 
 Use the param `--verbose` to get more information during execution. Wether or not, the tool will write a `realtgoodoffersbot.log` log file.
+
+**Ready-to-use command line :**
+
+```
+python realtgoodoffersbot.py --update -f mytokens.txt
+```
 
 ## Configuration
 
