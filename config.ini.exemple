@@ -1,0 +1,23 @@
+[blockchain]
+# this number will be overwritten after the 1st execution
+from_block = 0
+to_block = latest
+# you may want to change it if a new YAM version was deployed
+tx_deployment = 0x2c2553445fba875b64e8124c7519d79b988451250a614cdde825463922e536b0
+# you may want to change it if a new YAM version was deployed
+proxy_contract_address = 0xC759AA7f9dd9720A1502c104DaE4F9852bb17C14
+# I think this attribute will never change
+rpc_url = https://rpc.gnosis.gateway.fm
+
+[filter]
+# max price for an offer
+max_price = 
+
+[telegram]
+# see Telegram documentation to create your own bot
+token = 
+chat_id = 
+
+[ntfy]
+server = https://ntfy.sh/
+topic = 

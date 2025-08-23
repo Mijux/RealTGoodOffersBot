@@ -28,7 +28,7 @@ git clone https://github.com/nathan-out/RealTGoodOffersBot.git
 cd RealTGoodOffersBot
 python -m venv RealTGoodOffersBot_venv
 source RealTGoodOffersBot_venv/bin/activate
-pip install -r requirements
+pip install -r requirements.txt
 
 # /!\ you must create the config.ini file, see Configuration part /!\ 
 
@@ -89,14 +89,19 @@ proxy_contract_address = 0xC759AA7f9dd9720A1502c104DaE4F9852bb17C14
 # I think this attribute will never change
 rpc_url = https://rpc.gnosis.gateway.fm
 
+[filter]
+# max price for an offer
+max_price = 
+
 [telegram]
 # see Telegram documentation to create your own bot
 token = 
 chat_id = 
 
-[filter]
-# max price for an offer
-max_price = 
+[ntfy]
+server = https://ntfy.sh/
+topic = 
+
 ```
 
 ## ABI.json
