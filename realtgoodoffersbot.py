@@ -312,5 +312,5 @@ if __name__ == "__main__":
         notifying(
                 MessageType.CRITICAL,
                 msg="Script tombé en échec : "+str(err),
-                error_msg=str(e),
+                error_msg=str(err),
             )
