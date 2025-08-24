@@ -113,9 +113,11 @@ def process_yam_available_offers(contract):
                     for log in OfferAccepted_logs
                 ):
                     # si l'offre n'est ni dans les offres supprimées ni dans les acceptées, alors elle est dispo
-                    # dernier filtre : si on peut récupérer des infos on chain, l'offre est valable
+                    # avant-dernier filtre : si on peut récupérer des infos on chain, l'offre est valable
                     try:
-                        contract.functions.showOffer(offer["args"]["offerId"]).call()
+                        offer = contract.functions.showOffer(offer["args"]["offerId"]).call()
+                        # dernier filtre : si la qtt de token = 0 alors pas besoin d'ajouter l'offre
+                        if offer[5] == 0: break
                         # On n'ajoute pas les offres déjà présentes sinon, le fichier grossira à l'infini
                         if not any(
                             log["args"]["offerId"] == offer["args"]["offerId"]
