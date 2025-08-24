@@ -49,6 +49,7 @@ config.ini
 # Logs and filter file
 *.log
 myfilters.txt
+mytokens.txt
 
 # JSON database
 OfferAccepted_logs.json
