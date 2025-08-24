@@ -13,7 +13,7 @@ from notification.notify import notifying
 
 logging.basicConfig(
     filename="realtgoodoffersbot.log",  # fichier où seront enregistrés les logs
-    level=logging.INFO,  # niveau minimum à logger (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+    level=logging.ERROR,  # niveau minimum à logger (DEBUG, INFO, WARNING, ERROR, CRITICAL)
     format="%(asctime)s - %(levelname)s - %(message)s",  # format des messages
 )
 
