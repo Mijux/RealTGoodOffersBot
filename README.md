@@ -1,6 +1,6 @@
 # RealTGoodOffersBot
 
-**On-chain** retrieval of RealT secondary market offers (YAM). Filtering of offers via a customizable configuration and sending of offers via Telegram.
+**On-chain** retrieval of RealT secondary market offers (YAM). Filtering of offers via a customizable configuration and sending of offers via Telegram or Ntfy .
 
 ## Overview
 
@@ -30,7 +30,8 @@ python -m venv RealTGoodOffersBot_venv
 source RealTGoodOffersBot_venv/bin/activate
 pip install -r requirements.txt
 
-# /!\ you must create the config.ini file, see Configuration part /!\ 
+# /!\ you must set the config.ini file, see Configuration part /!\ 
+# once you set it, continue the installation
 
 # Test the installation
 python realtgoodoffersbot.py
@@ -75,7 +76,7 @@ The bot will send you a notification for the first two properties, but also for 
 
 ### Config file
 
-**You have to create this file :**`config.ini`. It **must** contains the following informations:
+**You must create this file :**`config.ini`. You have to choose between Telegram or Ntfy notification system, please read the according doc to set it. The file **must** contains the following informations:
 
 ```ini
 [blockchain]
@@ -95,10 +96,13 @@ max_price =
 
 [telegram]
 # see Telegram documentation to create your own bot
+# let empty if you don't want to use this notification way
 token = 
 chat_id = 
 
 [ntfy]
+# see Ntfy documentation to create your own topic
+# let empty if you don't want to use this notification way
 server = https://ntfy.sh/
 topic = 
 
