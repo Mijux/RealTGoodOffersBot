@@ -189,120 +189,128 @@ def check_offers_and_send_notif(filter_file):
 
 
 if __name__ == "__main__":
+    # Gros try pour catch toutes les erreurs et en faire une notif
     try:
-        # ABI du contrat
-        contract_abi = json.load(open("ABI.json", "r"))
-    except FileNotFoundError as e:
-        logging.critical(
-            f"ABI.json introuvable, disponible ici : https://gnosisscan.io/address/0x3b9543e2851accaef9b4f6fb42fcaea5e9231589#code"
-        )
-        raise e
-    try:
-        # 1. Connexion au nœud RPC de Gnosis Chain
-        rpc_url = config["blockchain"]["rpc_url"]  # endpoint public
-        w3 = Web3(
-            HTTPProvider(rpc_url, request_kwargs={"timeout": 120})
-        )  # Timeout fréquent si laissé par défaut
-
-        # 2. Adresse du PROXY du contrat du YAM. Ne pas utiliser l'adresse du YAM directement.
-        proxy_contract_address = w3.to_checksum_address(
-            config["blockchain"]["proxy_contract_address"]
-        )
-
-        if not w3.is_connected():
-            logging.critical(f"Connexion à Gnosis échouée, envoie d'une notification")
-            notifying(
-                MessageType.CRITICAL, msg="Connexion à Gnosis échouée", error_msg=""
-            )
-            raise Exception("Connexion à Gnosis échouée")
-
-        # 4. Instancier le contrat
-        contract = w3.eth.contract(address=proxy_contract_address, abi=contract_abi)
-    except Exception as e:
-        logging.critical(f"Erreur lors de l'instanciation du contrat : {e}")
-        notifying(
-            MessageType.CRITICAL,
-            msg="instanciation du contrat impossible",
-            error_msg=str(e),
-        )
-        raise Exception(e)
-
-    # Obtenir le 1er bloc à partir de la tx de déploiement du YAM
-    try:
-        tx_deployment = config["blockchain"]["tx_deployment"]
-        tx_receipt = w3.eth.get_transaction_receipt(tx_deployment)
-        deployment_block = tx_receipt.blockNumber
-    except Exception as e:
-        logging.critical(f"Erreur lors de la récupération du dernier bloc : {e}")
-        notifying(
-            MessageType.CRITICAL,
-            msg="récupération du dernier bloc impossible",
-            error_msg=str(e),
-        )
-        raise Exception(e)
-
-    parser = argparse.ArgumentParser(
-        description="Tracker des offres du marché secondaire de RealT. Envoie les offres filtrées via Telegram."
-    )
-    parser.add_argument(
-        "-f",
-        "--filter-file",
-        required=True,
-        help='Fichier qui contient vos tokens à tracker, ligne par ligne. L\'opérateur de recherche est un "in". Exemple : "14631-14633 Plymouth\\n23750 W 7 Mile".',
-    )
-    parser.add_argument(
-        "--update",
-        action="store_true",
-        help="Met à jour les offres en requêtant la blockchain.",
-    )
-    parser.add_argument(
-        "--verbose", action="store_true", help="Activer les messages d'information"
-    )
-    args = parser.parse_args()
-
-    if args.verbose:
-        logger = logging.getLogger("RTGOB")
-        logger.setLevel(logging.INFO)
-        handler = logging.StreamHandler(sys.stdout)
-        formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
-        handler.setFormatter(formatter)
-        logger.addHandler(handler)
-    if args.update:
         try:
-            last_block_number = w3.eth.get_block("latest").get("number")
-            first_block_number = int(config["blockchain"]["from_block"])
-            blocks_to_check = last_block_number - first_block_number
-            block_stack = 1_000_000
+            # ABI du contrat
+            contract_abi = json.load(open("ABI.json", "r"))
+        except FileNotFoundError as e:
+            logging.critical(
+                f"ABI.json introuvable, disponible ici : https://gnosisscan.io/address/0x3b9543e2851accaef9b4f6fb42fcaea5e9231589#code"
+            )
+            raise e
+        try:
+            # 1. Connexion au nœud RPC de Gnosis Chain
+            rpc_url = config["blockchain"]["rpc_url"]  # endpoint public
+            w3 = Web3(
+                HTTPProvider(rpc_url, request_kwargs={"timeout": 120})
+            )  # Timeout fréquent si laissé par défaut
 
-            if blocks_to_check < block_stack:
-                get_and_save_all_logs(
-                    contract,
-                    from_block=config["blockchain"]["from_block"],
-                    to_block=config["blockchain"]["to_block"],
+            # 2. Adresse du PROXY du contrat du YAM. Ne pas utiliser l'adresse du YAM directement.
+            proxy_contract_address = w3.to_checksum_address(
+                config["blockchain"]["proxy_contract_address"]
+            )
+
+            if not w3.is_connected():
+                logging.critical(f"Connexion à Gnosis échouée, envoie d'une notification")
+                notifying(
+                    MessageType.CRITICAL, msg="Connexion à Gnosis échouée", error_msg=""
                 )
-            else:
-                how_many_milli = int(blocks_to_check / block_stack)
-                rest = blocks_to_check % block_stack
-                for i in range(0, how_many_milli):
-                    born_inf = first_block_number + i * block_stack
-                    logging.info(f"from {born_inf} to {born_inf + block_stack}")
+                raise Exception("Connexion à Gnosis échouée")
+
+            # 4. Instancier le contrat
+            contract = w3.eth.contract(address=proxy_contract_address, abi=contract_abi)
+        except Exception as e:
+            logging.critical(f"Erreur lors de l'instanciation du contrat : {e}")
+            notifying(
+                MessageType.CRITICAL,
+                msg="instanciation du contrat impossible",
+                error_msg=str(e),
+            )
+            raise Exception(e)
+
+        # Obtenir le 1er bloc à partir de la tx de déploiement du YAM
+        try:
+            tx_deployment = config["blockchain"]["tx_deployment"]
+            tx_receipt = w3.eth.get_transaction_receipt(tx_deployment)
+            deployment_block = tx_receipt.blockNumber
+        except Exception as e:
+            logging.critical(f"Erreur lors de la récupération du dernier bloc : {e}")
+            notifying(
+                MessageType.CRITICAL,
+                msg="récupération du dernier bloc impossible",
+                error_msg=str(e),
+            )
+            raise Exception(e)
+
+        parser = argparse.ArgumentParser(
+            description="Tracker des offres du marché secondaire de RealT. Envoie les offres filtrées via Telegram."
+        )
+        parser.add_argument(
+            "-f",
+            "--filter-file",
+            required=True,
+            help='Fichier qui contient vos tokens à tracker, ligne par ligne. L\'opérateur de recherche est un "in". Exemple : "14631-14633 Plymouth\\n23750 W 7 Mile".',
+        )
+        parser.add_argument(
+            "--update",
+            action="store_true",
+            help="Met à jour les offres en requêtant la blockchain.",
+        )
+        parser.add_argument(
+            "--verbose", action="store_true", help="Activer les messages d'information"
+        )
+        args = parser.parse_args()
+
+        if args.verbose:
+            logger = logging.getLogger("RTGOB")
+            logger.setLevel(logging.INFO)
+            handler = logging.StreamHandler(sys.stdout)
+            formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+            handler.setFormatter(formatter)
+            logger.addHandler(handler)
+        if args.update:
+            try:
+                last_block_number = w3.eth.get_block("latest").get("number")
+                first_block_number = int(config["blockchain"]["from_block"])
+                blocks_to_check = last_block_number - first_block_number
+                block_stack = 1_000_000
+
+                if blocks_to_check < block_stack:
                     get_and_save_all_logs(
                         contract,
-                        from_block=born_inf,
-                        to_block=born_inf + block_stack,
+                        from_block=config["blockchain"]["from_block"],
+                        to_block=config["blockchain"]["to_block"],
+                    )
+                else:
+                    how_many_milli = int(blocks_to_check / block_stack)
+                    rest = blocks_to_check % block_stack
+                    for i in range(0, how_many_milli):
+                        born_inf = first_block_number + i * block_stack
+                        logging.info(f"from {born_inf} to {born_inf + block_stack}")
+                        get_and_save_all_logs(
+                            contract,
+                            from_block=born_inf,
+                            to_block=born_inf + block_stack,
+                        )
+
+                    logging.info(f"from {born_inf} to latest")
+                    get_and_save_all_logs(
+                        contract,
+                        from_block=first_block_number + how_many_milli * block_stack,
+                        to_block="latest",
                     )
 
-                logging.info(f"from {born_inf} to latest")
-                get_and_save_all_logs(
-                    contract,
-                    from_block=first_block_number + how_many_milli * block_stack,
-                    to_block="latest",
-                )
+            except Exception as e:
+                logging.error(f"Obtention des logs impossible : {e}")
 
-        except Exception as e:
-            logging.error(f"Obtention des logs impossible : {e}")
-
-        process_yam_available_offers(contract)
-    logging.info("En train de checker les offres...")
-    check_offers_and_send_notif(args.filter_file)
-    logging.info("Terminé !")
+            process_yam_available_offers(contract)
+        logging.info("En train de checker les offres...")
+        check_offers_and_send_notif(args.filter_file)
+        logging.info("Terminé !")
+    except Exception as err:
+        notifying(
+                MessageType.CRITICAL,
+                msg="Script tombé en échec : "+str(err),
+                error_msg=str(e),
+            )
